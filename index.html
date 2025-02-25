@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
     <head>
         <meta charset="utf-8">
         <title>Real-Time Sonar</title>
         <link href="styles.css" rel="stylesheet">
-        <script scr="index.js"></script>
+        <script src="index.js"></script>
+        <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+        <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
     </head>
     <body>
         <header>
             <h1>Real-Time Sonar Data Visualization</h1>
         </header>
+        <p id="result"></p>
         <main>
             <p>
                 What is shown is the real-time generated sonar data map from different ships in
@@ -18,6 +21,7 @@
             </p>
             <section id="echo-map">
 
+                <div id='map'></div>
             </section>
             <section id="echogram"></section>
         </main>
