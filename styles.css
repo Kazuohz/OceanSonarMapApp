@@ -3,7 +3,6 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #06283D;
-    color: #DFF6FF;
 }
 
 header, main {
@@ -19,4 +18,9 @@ main {
     border-radius: 8px;
     background-color: #256D85;
     margin: 20px;
+}
+
+#map {
+    height: 500px;
+    width: 700px;
 }
