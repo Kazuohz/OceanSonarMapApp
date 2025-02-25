@@ -18,6 +18,7 @@
 
         map.on('load', async () => {
             const image = await map.loadImage('https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png');
+            // const image = await map.loadImage('marker.png');
             map.addImage('cat', image.data);
             map.addSource('point', {
                 'type': 'geojson',
@@ -65,7 +66,6 @@
 
                 new maplibregl.Popup().setLngLat(coordinates).setHTML(description).addTo(map);
 
-                // getCall("/test/5");
                 makeRequest("/test/5");
             });
 
@@ -103,27 +103,8 @@
             res = await res.text();
             loadEchogram(res);
         } catch(error) {
-            handleError(error);
+            console.error("Error:", error);
         }
-    }
-
-    function getCall(data) {
-
-        fetch(data)
-            .then(statusCheck)
-            .then(res => res.text())
-            .then(function(res) {
-                console.log(res);
-                console.log("AAAAAAAAAAAAAAAA")
-            })
-            .catch(error => console.error("Error:", error));
-    }
-
-    /**
-     * Displays to the user that an error has occured.
-     */
-    function handleError(error) {
-        console.error("Error:", error);
     }
 
     /**
