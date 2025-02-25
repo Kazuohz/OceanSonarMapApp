@@ -52,28 +52,6 @@ function runPythonScript(scriptPath, args, callback) {
     });
 }
 
-/**
- * Helper method to lesson time processing queries for the first get call.
- * @param {DB_CALL} type Type of call into the database. 
- * @param {String} data Actual Call.
- * @returns {String} Call command.
- */
-function queryCreator(type, data) {
-    return "SELECT * FROM blah ORDER BY DATETIME(date) DESC;";
-}
-
-/**
- * Dedicated method to establishing a connetion with a database.
- * @returns {DATABASE} Connected SQL database.
- */
-async function getDBConnection() {
-    const db = await sqlite.open({
-        filename: 'yipper.db',
-        driver: sqlite.Database
-    });
-    return db;
-}
-
 // tells the code to serve static files in a directory called public
 app.use(express.static("public"));
 // specify the port to listen to
