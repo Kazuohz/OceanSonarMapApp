@@ -4,7 +4,84 @@
     window.addEventListener("load", init);
 
     function init() {
-        getCall("/maps");
+        genMap();
+    }
+
+    function genMap() {
+        
+        const map = new maplibregl.Map({
+            container: "map",
+            style: "https://demotiles.maplibre.org/style.json",
+            center: [0, 0],
+            zoom: 1
+        });
+
+        map.on('load', async () => {
+            const image = await map.loadImage('https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png');
+            map.addImage('cat', image.data);
+            map.addSource('point', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'FeatureCollection',
+                    'features': [
+                        {
+                            'type': 'Feature',
+                            "properties": {
+                                "description":
+                                    '<strong>A Little Night Music</strong><p>The Arlington Players\' production of Stephen Sondheim\'s <em>A Little Night Music</em> comes to the Kogod Cradle at The Mead Center for American Theater (1101 6th Street SW) this weekend and next. 8:00 p.m.</p>'
+                            },
+                            'geometry': {
+                                'type': 'Point',
+                                'coordinates': [0, 0]
+                            }
+                        }
+                    ]
+                }
+            });
+
+            map.addLayer({
+                'id': 'points',
+                'type': 'symbol',
+                'source': 'point',
+                'layout': {
+                    'icon-image': 'cat',
+                    'icon-size': 0.25
+                }
+            });
+
+            map.on('click', 'points', (e) => {
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const description = e.features[0].properties.description;
+
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                new maplibregl.Popup().setLngLat(coordinates).setHTML(description).addTo(map);
+
+                // getCall("/test/5");
+                makeRequest("/test/5");
+            });
+
+            map.on('mouseenter', 'points', () => {
+                map.getCanvas().style.cursor = 'pointer';  
+            });
+
+            map.on('mouseleave', "points", () => {
+                map.getCanvas().style.cursor = "";
+            })
+        });
+    }
+
+    function loadEchogram(data) {
+        console.log(data);
+        console.log("hello world");
     }
 
     /**
@@ -19,26 +96,34 @@
         return res;
     }
 
+    async function makeRequest(data) {
+        try {
+            let res = await fetch(URL + data);
+            await statusCheck(res);
+            res = await res.text();
+            loadEchogram(res);
+        } catch(error) {
+            handleError(error);
+        }
+    }
+
     function getCall(data) {
+
         fetch(data)
             .then(statusCheck)
-            .then(res => res.json())
+            .then(res => res.text())
             .then(function(res) {
-                if (data === "/maps") {
-                    initPage(res);
-                } else {
-                    loadEchogram(res);
-                }
+                console.log(res);
+                console.log("AAAAAAAAAAAAAAAA")
             })
-            .catch(handleError);
+            .catch(error => console.error("Error:", error));
     }
 
     /**
      * Displays to the user that an error has occured.
      */
-    function handleError() {
-        let paragraph = gen("p");
-        paragraph.textContent = "Something is wrong. Please refresh the page.";
+    function handleError(error) {
+        console.error("Error:", error);
     }
 
     /**
